@@ -1,6 +1,6 @@
 MODULE RA8875_b;
 
-
+IMPORT Strings;
 
 CONST
 
@@ -693,8 +693,28 @@ If pattern Format = 16x16 then Pattern Set [1:0] is valid *)
 	RA8875_INTCx_DMA =       	    008H;  (*0x08 *)
 	RA8875_INTCx_TP  =       	    004H;  (*0x04 *)
 	RA8875_INTCx_BTE =       	    002H;  (*0x02 *)
+  
+  
+TYPE
+
+chararray = ARRAY OF CHAR;
+
+ConstValFunc = PROCEDURE (RegName: chararray):INTEGER;
+  
+InitSequence = ARRAY OF ConstVal;
+VAR 
+constvalue :ConstValFunc;
+
+PROCEDURE RegValue(RegName: chararray):INTEGER;
+BEGIN 
+constvalue := (RegName) 
+RETURN constval
+
+END RegValue;
+
+
 
 END RA8875_b.
 
 
-END RA8875_b.
+
