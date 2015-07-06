@@ -701,14 +701,14 @@ chararray = ARRAY OF CHAR;
 
 ConstValFunc = PROCEDURE (RegName: chararray):INTEGER;
   
-InitSequence = ARRAY OF ConstVal;
-VAR 
-constvalue :ConstValFunc;
+InitSequence = ARRAY OF ConstValFunc;
+VAR
+constvalue : INTEGER;
 
-PROCEDURE RegValue(RegName: chararray):INTEGER;
+PROCEDURE RegValue(String: ConstValFunc):INTEGER;
 BEGIN 
-constvalue := (RegName) 
-RETURN constval
+constvalue := (String); 
+RETURN constvalue
 
 END RegValue;
 
