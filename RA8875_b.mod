@@ -55,11 +55,11 @@ CONST
 0:no action, 1:reset */*)
 
  RA8875_PWRR =            010H; (*Power and Display Control Register*)
- RA8875_PWRR_DISPON =     800H;
+ RA8875_PWRR_DISPON =     080H;
  RA8875_PWRR_DISPOFF =    000H;
- RA8875_PWRR_SLEEP =      020H;
+ RA8875_PWRR_SLEEP =      002H;
  RA8875_PWRR_NORMAL =     000H;
- RA8875_PWRR_SOFTRESET =  010H;
+ RA8875_PWRR_SOFTRESET =  001H;
  
 (* REG[02h] Memory Read/Write Command (MRWC)
 Data to write in memory corresponding to the setting of
@@ -67,12 +67,12 @@ MWCR1[3:2]. Continuous data write cycle can be accepted in
 bulk data write case.
 *)
 
- RA8875_MRWC =            	020H; (*Memory Read/Write Command*)
- RA8875_CMDWRITE =        	800H;
+ RA8875_MRWC =            	002H; (*Memory Read/Write Command*)
+ RA8875_CMDWRITE =        	080H;
  RA8875_CMDREAD =         	0C0H; (* 0xC0 !!! ??? !!!*)
  RA8875_DATAWRITE =       	000H;
- RA8875_DATAREAD =        	400H;
- RA8875_STATREG	=			      400H;
+ RA8875_DATAREAD =        	040H;
+ RA8875_STATREG	=			      040H;
  
 (* Pixel Clock Setting Register 	[0x04]
 ----- Bit 7 (PCLK Inversion)
@@ -82,10 +82,10 @@ bulk data write case.
 00: PCLK period = System Clock period.
 01: PCLK period = 2 times of System Clock period
 10: PCLK period = 4 times of System Clock period
-11: PCLK period = 8 times of System Clock period*/
-#define RA8875_PCSR             	  0x04//Pixel Clock Setting Register
+11: PCLK period = 8 times of System Clock period *)
+ RA8875_PCSR =            	 004H;  (*0x04//Pixel Clock Setting Register *)
 
-
+(*
  Serial Flash/ROM Configuration 	 [0x05]
 ----- Bit 7 (Serial Flash/ROM I/F # Select)
 0:Serial Flash/ROM 0 , 1:Serial Flash/ROM 1
@@ -103,7 +103,7 @@ bulk data write case.
 10: Dual Mode 0
 11: Dual Mode 1*)
 
- RA8875_SROC =        	 050H; (*Serial Flash/ROM Configuration*)
+ RA8875_SROC =        	 005H; (*Serial Flash/ROM Configuration*)
  
 (* Serial Flash/ROM CLK			     [0x06]
 ----- Bit 7,6,5,4,3,2 (na) 
@@ -112,7 +112,7 @@ bulk data write case.
 10: SFCL frequency = System clock frequency / 2
 11: SFCL frequency = System clock frequency / 4 *)
 
- RA8875_SFCLR =         060H; (*Serial Flash/ROM CLK*)
+ RA8875_SFCLR =         006H; (*Serial Flash/ROM CLK*)
  (*EXTROM_SFCLSPEED	=         ;  0b00000011// /4 0b00000010 /2     !!!!!!!!!!!!!!!*)
 
 (* System Configuration Register		 [0x10]
@@ -124,7 +124,7 @@ bulk data write case.
 00: 8-bit MCU Interface
 1x: 16-bit MCU Interface *)
 
- RA8875_SYSR =          100H;  (*//System Configuration Register *)
+ RA8875_SYSR =          010H;  (*//System Configuration Register *)
 
 (* LCD Horizontal Display Width Register [0x14]
 ----- Bit 7 (na)
@@ -132,27 +132,27 @@ bulk data write case.
 no more than 0x64( max with = 800)
 note: Horizontal display width(pixels) = (HDWR + 1) * 8 *)
 
- RA8875_HDWR =          140H;  	 (* 0x14//LCD Horizontal Display Width Register*)
+ RA8875_HDWR =          014H;  	 (* 0x14//LCD Horizontal Display Width Register*)
 (* Horizontal Non-Display Period Fine Tuning Option Register [0x15]
 ----- Bit 7 (DE polarity)
 0:High, 1:Low
 ----- Bit 6,5,4 (na)
 ----- Bit 3,2,1,0 (Horizontal Non-Display Period Fine Tuning(HNDFT)) *)
 
- RA8875_HNDFTR =        150H;  	 (* 0x15//Horizontal Non-Display Period Fine Tuning Option Register*)
+ RA8875_HNDFTR =        015H;  	 (* 0x15//Horizontal Non-Display Period Fine Tuning Option Register*)
 (* LCD Horizontal Non-Display Period Register [0x16]
 ----- Bit 7,6,5 (na)
 ----- Bit 4,0 (HSYNC Start Position)
 note: HSYNC Start Position(pixels) = (HSTR + 1) * 8 *)
 
- RA8875_HNDR =         160H;	  (*0x16//LCD Horizontal Non-Display Period Register*)
+ RA8875_HNDR =         016H;	  (*0x16//LCD Horizontal Non-Display Period Register*)
  
 (* HSYNC Start Position Register	 [0x17]
 ----- Bit 7,6,5 (na)
 ----- Bit 4,0 (HSYNC Start Position)
 note: HSYNC Start Position(pixels) = (HSTR + 1) * 8 */*)
 
- RA8875_HSTR =          170H; (* 0x17//HSYNC Start Position Register*)
+ RA8875_HSTR =          017H; (* 0x17//HSYNC Start Position Register*)
  
 (* HSYNC Pulse Width Register		 [0x18]
 ----- Bit 7 (HSYNC Polarity)
@@ -161,14 +161,14 @@ note: HSYNC Start Position(pixels) = (HSTR + 1) * 8 */*)
 ----- Bit 4,0 (HSYNC Pulse Width(HPW))
 note: HSYNC Pulse Width(pixels) = (HPW + 1) * 8 *)
 
- RA8875_HPWR =          180H;  	(*  0x18//HSYNC Pulse Width Register *)
- RA8875_VDHR0 =         190H;  	(*  0x19//LCD Vertical Display Height Register 0 *)
- RA8875_VDHR1 =       1A0H;    (*  0x1A//LCD Vertical Display Height Register 1 *)
- RA8875_VNDR0 =         1B0H;    (*  0x1B//LCD Vertical Non-Display Period Register 0*)
- RA8875_VNDR1 =       1C0H;    (*	0x1C//LCD Vertical Non-Display Period Register 1*)
- RA8875_VSTR0 =         1D0H;  	(*  0x1D//VSYNC Start Position Register 0*)
- RA8875_VSTR1 =         1E0H;  	(*  0x1E//VSYNC Start Position Register 1 *)
- RA8875_VPWR  =         1F0H;  	(*  0x1F//VSYNC Pulse Width Register *)
+ RA8875_HPWR =          018H;  	(*  0x18//HSYNC Pulse Width Register *)
+ RA8875_VDHR0 =         019H;  	(*  0x19//LCD Vertical Display Height Register 0 *)
+ RA8875_VDHR1 =         01AH;    (*  0x1A//LCD Vertical Display Height Register 1 *)
+ RA8875_VNDR0 =         01BH;    (*  0x1B//LCD Vertical Non-Display Period Register 0*)
+ RA8875_VNDR1 =         01CH;    (*	0x1C//LCD Vertical Non-Display Period Register 1*)
+ RA8875_VSTR0 =         01DH;  	(*  0x1D//VSYNC Start Position Register 0*)
+ RA8875_VSTR1 =         01EH;  	(*  0x1E//VSYNC Start Position Register 1 *)
+ RA8875_VPWR  =         01FH;  	(*  0x1F//VSYNC Pulse Width Register *)
 (* 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //                           LCD Display Control Registers
@@ -183,7 +183,7 @@ note: HSYNC Pulse Width(pixels) = (HPW + 1) * 8 *)
 0: COM0 to COM(n-1), 1: COM(n-1) to COM0
 ----- Bit 1,0 (na) *)
 
- RA8875_DPCR	=			       200H; (* 0x20//Display Configuration Register *)
+ RA8875_DPCR	=			       020H; (* 0x20//Display Configuration Register *)
 (* Font Control Register 0			  [0x21]
 ----- Bit 7 (CGRAM/CGROM Font Selection Bit in Text Mode)
 0:CGROM font, 1:CGRAM font
@@ -197,7 +197,7 @@ note: HSYNC Pulse Width(pixels) = (HPW + 1) * 8 *)
 10: ISO/IEC 8859-3
 11: ISO/IEC 8859-4 *)
 
- RA8875_FNCR0	=			      210H; (*0x21//Font Control Register 0*)
+ RA8875_FNCR0	=			      021H; (*0x21//Font Control Register 0*)
 (* Font Control Register 1			 [0x22]
 ----- Bit 7 (Full Alignment)
 0:disabled, 1:enabled
@@ -211,43 +211,43 @@ note: HSYNC Pulse Width(pixels) = (HPW + 1) * 8 *)
 ----- Bit 1,0 (Vertical Font Enlargement)
 00:normal, 01:x2, 10:x3, 11:x4 *)
 
- RA8875_FNCR1	=			      220H; (* 0x22//Font Control Register 1 *)
+ RA8875_FNCR1	=			      022H; (* 0x22//Font Control Register 1 *)
 (* CGRAM Select Register			  [0x23]
 ----- Bit 7,6,5,4,3,2,1,0 ------------- *)
- RA8875_CGSR =				       230H; (* 0x23//CGRAM Select Register *)
+ RA8875_CGSR =				       023H; (* 0x23//CGRAM Select Register *)
 (* Horizontal Scroll Offset Register 0 [0x24]
 ----- Bit 7,6,5,4,3,2,1,0 ------------- *)
- RA8875_HOFS0	=			      240H;  (* 0x24//Horizontal Scroll Offset Register 0 *)
+ RA8875_HOFS0	=			      024H;  (* 0x24//Horizontal Scroll Offset Register 0 *)
 (* Horizontal Scroll Offset Register 1 [0x25]
 ----- Bit 7,6,5,4,3 (na) ------------- 
 ----- Bit 2,0 (Horizontal Display Scroll Offset) *)
- RA8875_HOFS1	=			      250H;  (* 0x25//Horizontal Scroll Offset Register 1 *)
+ RA8875_HOFS1	=			      025H;  (* 0x25//Horizontal Scroll Offset Register 1 *)
 (* Vertical Scroll Offset Register 0 [0x26]
 ----- Bit 7,6,5,4,3,2,1,0 ------------- *)
- RA8875_VOFS0	=			      260H;  (* 0x26//Vertical Scroll Offset Register 0 *)
+ RA8875_VOFS0	=			      026H;  (* 0x26//Vertical Scroll Offset Register 0 *)
 (* Vertical Scroll Offset Register 1 [0x27]
 ----- Bit 7,6,5,4,3,2 (na) ------------- 
 ----- Bit 1,0 (Vertical Display Scroll Offset) ------------- *)
- RA8875_VOFS1	=			      270H;  (* 0x27//Vertical Scroll Offset Register 1 *)
+ RA8875_VOFS1	=			      027H;  (* 0x27//Vertical Scroll Offset Register 1 *)
 (* Font Line Distance Setting Register[0x29]
 ----- Bit 7,6,5 (na) ------------- 
 ----- Bit 4,0 (Font Line Distance Setting) *)
- RA8875_FLDR	=			  	  290H;  (* 0x29//Font Line Distance Setting Register *)
+ RA8875_FLDR	=			  	  029H;  (* 0x29//Font Line Distance Setting Register *)
 
 (* Font Write Cursor Horizontal Position Register 0 [0x2A]
 ----- Bit 7,6,5,4,3,2,1,0 ------------- *)
- RA8875_F_CURXL =				    2A0H;  (* 0x2A//Font Write Cursor Horizontal Position Register 0 *)
+ RA8875_F_CURXL =				  02AH;  (* 0x2A//Font Write Cursor Horizontal Position Register 0 *)
 (* Font Write Cursor Horizontal Position Register 1 [0x2B]
 ----- Bit 7,2 (na) ------------- 
 ----- Bit 1,0 (Font Write Cursor Horizontal Position) *)
- RA8875_F_CURXH	=			    2B0H;  (* 0x2B//Font Write Cursor Horizontal Position Register 1 *)
+ RA8875_F_CURXH	=			    02BH;  (* 0x2B//Font Write Cursor Horizontal Position Register 1 *)
 (* Font Write Cursor Vertical Position Register 0 [0x2C]
 ----- Bit 7,6,5,4,3,2,1,0 ------------- *)
- RA8875_F_CURYL	=			    2C0H;  (* 0x2C//Font Write Cursor Vertical Position Register 0 *)
+ RA8875_F_CURYL	=			    02CH;  (* 0x2C//Font Write Cursor Vertical Position Register 0 *)
 (* Font Write Cursor Vertical Position Register 1 [0x2D]
 ----- Bit 7,1 (na) ------------- 
 ----- Bit 0 (Font Write Cursor Vertical Position Register 1) *)
- RA8875_F_CURYH	=			    2D0H;  (* 0x2D//Font Write Cursor Vertical Position Register 1 *)
+ RA8875_F_CURYH	=			    02DH;  (* 0x2D//Font Write Cursor Vertical Position Register 1 *)
 (* Font Write Type Setting Register [0x2E]
 ----- Bit 7,6 -------------
 00: 16x16(full) - 8x16(half) - nX16(var)
@@ -256,7 +256,7 @@ note: HSYNC Pulse Width(pixels) = (HPW + 1) * 8 *)
 ----- Bit 5,0 -------------
 Font to Font Width Setting
 00 --> 3F (0 to 63 pixels) *)
- RA8875_FWTSET =        		2E0H;  (* 0x2E//Font Write Type Setting Register *)
+ RA8875_FWTSET =        		02EH;  (* 0x2E//Font Write Type Setting Register *)
 (* Serial Font ROM Setting 			 [0x2F]
 ----- Bit 7,6,5 -------------
 000: GT21L16TW / GT21H16T1W
@@ -277,29 +277,29 @@ Font to Font Width Setting
 00: normal(ASCII) - normal(LGC) -    na(arabic)
 01: Arial(ASCII) -  var width(LGC) - PresFormA(arabic)
 10: Roman(ASCII) -  na(LGC) -        na(arabic) *)
- RA8875_SFRSET =        2F0H; (* 0x2F//Serial Font ROM Setting *)
+ RA8875_SFRSET =        02FH; (* 0x2F//Serial Font ROM Setting *)
 (*
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //                    Active Window & Scroll Window Setting Registers
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 *)
- RA8875_HSAW0 =           	  300H;  (* 0x30//Horizontal Start Point 0 of Active Window *)
- RA8875_HSAW1 =           	  310H;  (* 0x31//Horizontal Start Point 1 of Active Window *)
- RA8875_VSAW0 =           	  320H;  (* 0x32//Vertical   Start Point 0 of Active Window *)
- RA8875_VSAW1 =           	  330H;  (*0x33//Vertical   Start Point 1 of Active Window *)
- RA8875_HEAW0 =           	  340H;  (*0x34//Horizontal End   Point 0 of Active Window *)
- RA8875_HEAW1 =           	  350H;  (*0x35//Horizontal End   Point 1 of Active Window  *)
- RA8875_VEAW0 =          	  	360H;  (* 0x36//Vertical   End   Point of Active Window 0 *)
- RA8875_VEAW1 =           	  370H;  (*0x37//Vertical   End   Point of Active Window 1 *)
+ RA8875_HSAW0 =           	  030H;  (* 0x30//Horizontal Start Point 0 of Active Window *)
+ RA8875_HSAW1 =           	  031H;  (* 0x31//Horizontal Start Point 1 of Active Window *)
+ RA8875_VSAW0 =           	  032H;  (* 0x32//Vertical   Start Point 0 of Active Window *)
+ RA8875_VSAW1 =           	  033H;  (*0x33//Vertical   Start Point 1 of Active Window *)
+ RA8875_HEAW0 =           	  034H;  (*0x34//Horizontal End   Point 0 of Active Window *)
+ RA8875_HEAW1 =           	  035H;  (*0x35//Horizontal End   Point 1 of Active Window  *)
+ RA8875_VEAW0 =          	  	036H;  (* 0x36//Vertical   End   Point of Active Window 0 *)
+ RA8875_VEAW1 =           	  037H;  (*0x37//Vertical   End   Point of Active Window 1 *)
  
- RA8875_HSSW0 =           	  380H;  (*0x38//Horizontal Start Point 0 of Scroll Window *)
- RA8875_HSSW1 =           	  390H;  (*0x39//Horizontal Start Point 1 of Scroll Window *)
- RA8875_VSSW0 =           	  3A0H;  (*0x3A//Vertical 	 Start Point 0 of Scroll Window *)
- RA8875_VSSW1 =           	  3B0H;  (*0x3B//Vertical 	 Start Point 1 of Scroll Window *)
- RA8875_HESW0 =           	  3C0H;  (*0x3C//Horizontal End   Point 0 of Scroll Window *)
- RA8875_HESW1 =           	  3D0H;  (*0x3D//Horizontal End   Point 1 of Scroll Window *)
- RA8875_VESW0 =           	  3E0H;  (*0x3E//Vertical 	 End   Point 0 of Scroll Window *)
- RA8875_VESW1 =           	  3F0H;  (*0x3F//Vertical 	 End   Point 1 of Scroll Window *)
+ RA8875_HSSW0 =           	  038H;  (*0x38//Horizontal Start Point 0 of Scroll Window *)
+ RA8875_HSSW1 =           	  039H;  (*0x39//Horizontal Start Point 1 of Scroll Window *)
+ RA8875_VSSW0 =           	  03AH;  (*0x3A//Vertical 	 Start Point 0 of Scroll Window *)
+ RA8875_VSSW1 =           	  03BH;  (*0x3B//Vertical 	 Start Point 1 of Scroll Window *)
+ RA8875_HESW0 =           	  03CH;  (*0x3C//Horizontal End   Point 0 of Scroll Window *)
+ RA8875_HESW1 =           	  03DH;  (*0x3D//Horizontal End   Point 1 of Scroll Window *)
+ RA8875_VESW0 =           	  03EH;  (*0x3E//Vertical 	 End   Point 0 of Scroll Window *)
+ RA8875_VESW1 =           	  03FH;  (*0x3F//Vertical 	 End   Point 1 of Scroll Window *)
 (* 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //                    Cursor Setting Registers
@@ -326,7 +326,7 @@ Font to Font Width Setting
 ----- Bit 0(Memory Read Cursor Auto-Increase Disable) 
 0: Cursor auto-increases when memory read
 1: Cursor doesn’t auto-increases when memory read *)
- RA8875_MWCR0 =           	  400H;  (*0x40//Memory Write Control Register 0 *)
+ RA8875_MWCR0 =           	  040H;  (*0x40//Memory Write Control Register 0 *)
 
 (* Memory Write Control Register 1   [0x41]
 ----- Bit 7 (Graphic Cursor Enable)
@@ -349,7 +349,7 @@ When resolution =< 480x400 or color depth = 8bpp:
 When resolution > 480x400 and color depth > 8bpp:
 na *)
 
- RA8875_MWCR1 =            	  410H;  (* 0x41//Memory Write Control Register 1 *)
+ RA8875_MWCR1 =            	  041H;  (* 0x41//Memory Write Control Register 1 *)
 (*
 from 0 to 255
 *)
@@ -362,34 +362,34 @@ from 0 to 255
 01: Right -> Left then Top -> Down
 10: Top -> Down then Left -> Right
 11: Down -> Top then Left -> Right *)
- RA8875_MRCD =           	  	450H; (* 0x45//Memory Read Cursor Direction *)
- RA8875_CURH0 =            	  460H;  (*0x46//Memory Write Cursor Horizontal Position Register 0 *)
- RA8875_CURH1 =           	  470H;  (*0x47//Memory Write Cursor Horizontal Position Register 1 *)
- RA8875_CURV0 =           	  480H;  (*0x48//Memory Write Cursor Vertical Position Register 0 *)
- RA8875_CURV1 =            	  490H;  (*0x49//Memory Write Cursor Vertical Position Register 1 *)
+ RA8875_MRCD =           	  	045H; (* 0x45//Memory Read Cursor Direction *)
+ RA8875_CURH0 =            	  046H;  (*0x46//Memory Write Cursor Horizontal Position Register 0 *)
+ RA8875_CURH1 =           	  047H;  (*0x47//Memory Write Cursor Horizontal Position Register 1 *)
+ RA8875_CURV0 =           	  048H;  (*0x48//Memory Write Cursor Vertical Position Register 0 *)
+ RA8875_CURV1 =            	  049H;  (*0x49//Memory Write Cursor Vertical Position Register 1 *)
 
- RA8875_RCURH0 =          	  4A0H;  (*0x4A//Memory Read Cursor Horizontal Position Register 0 *)
- RA8875_RCURH1 =          	  4B0H;  (*0x4B//Memory Read Cursor Horizontal Position Register 1 *)
- RA8875_RCURV0 =          	  4C0H;  (*0x4C//Memory Read Cursor Vertical Position Register 0 *)
- RA8875_RCURV1 =            	4D0H;  (*0x4D//Memory Read Cursor Vertical Position Register 1 *)
+ RA8875_RCURH0 =          	  04AH;  (*0x4A//Memory Read Cursor Horizontal Position Register 0 *)
+ RA8875_RCURH1 =          	  04BH;  (*0x4B//Memory Read Cursor Horizontal Position Register 1 *)
+ RA8875_RCURV0 =          	  04CH;  (*0x4C//Memory Read Cursor Vertical Position Register 0 *)
+ RA8875_RCURV1 =            	04DH;  (*0x4D//Memory Read Cursor Vertical Position Register 1 *)
 
 
 (* Font Write Cursor and Memory Write Cursor Horizontal Size  [0x4E]
 ----- Bit 7,6,5 (na)
 ----- Bit 4,0(Font Write Cursor Horizontal Size in pixels) *)
- RA8875_CURHS =            	  4E0H;  (*0x4E//Font Write Cursor and Memory Write Cursor Horizontal Size Register *)
+ RA8875_CURHS =            	  04EH;  (*0x4E//Font Write Cursor and Memory Write Cursor Horizontal Size Register *)
 (* Font Write Cursor Vertical Size Register   [0x4F]
 ----- Bit 7,6,5 (na)
 ----- Bit 4,0(Font Write Cursor Vertical Size in pixels) *)
- RA8875_CURVS =            	  4F0H;  (*0x4F//Font Write Cursor Vertical Size Register *)
+ RA8875_CURVS =            	  04FH;  (*0x4F//Font Write Cursor Vertical Size Register *)
 (* 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //              Block Transfer Engine(BTE) Control Registers
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 *)
 
- RA8875_BECR0 =           	  500H;  (*0x50//BTE Function Control Register 0 *)
- RA8875_BECR1 =           	  510H;  (*0x51//BTE Function Control Register 1 *)
+ RA8875_BECR0 =           	  050H;  (*0x50//BTE Function Control Register 0 *)
+ RA8875_BECR1 =           	  051H;  (*0x51//BTE Function Control Register 1 *)
 (* Layer Transparency Register 0     [0x52]
 ----- Bit 7,6 (Layer1/2 Scroll Mode)
 00: Layer 1/2 scroll simultaneously
@@ -409,7 +409,7 @@ from 0 to 255
 110: Floating window mode
 111: Reserve *)
 
- RA8875_LTPR0 =           	  520H;  (*0x52//Layer Transparency Register 0 *)
+ RA8875_LTPR0 =           	  052H;  (*0x52//Layer Transparency Register 0 *)
 (* Layer Transparency Register 1     [0x53]
 ----- Bit 7,6,5,4 (Layer Transparency Setting for Layer 2)
 0000: Total display
@@ -432,19 +432,19 @@ from 0 to 255
 0111: 1/8 display
 1000: Display disable *)
 
- RA8875_LTPR1 =           	  530H;  (*0x53//Layer Transparency Register 1*)
- RA8875_HSBE0	=			          540H;  (*0x54//Horizontal Source Point 0 of BTE *)
- RA8875_HSBE1	=			          550H;  (*0x55//Horizontal Source Point 1 of BTE *)
- RA8875_VSBE0	=			          560H;  (*0x56//Vertical Source Point 0 of BTE *)
- RA8875_VSBE1	=			          570H;  (*0x57//Vertical Source Point 1 of BTE *)
- RA8875_HDBE0	=			          580H;  (*0x58//Horizontal Destination Point 0 of BTE *0 *)
- RA8875_HDBE1	=			          590H;  (*0x59//Horizontal Destination Point 1 of BTE *)
- RA8875_VDBE0	=			          5A0H;  (*0x5A//Vertical Destination Point 0 of BTE *)
- RA8875_VDBE1	=			          5B0H;  (*0x5B//Vertical Destination Point 1 of BTE *)
- RA8875_BEWR0	=			          5C0H;  (*0x5C//BTE Width Register 0 *)
- RA8875_BEWR1	=			          5D0H;  (*0x5D//BTE Width Register 1 *)
- RA8875_BEHR0	=			          5E0H;  (*0x5E//BTE Height Register 0 *)
- RA8875_BEHR1	=			          5F0H;  (*0x5F//BTE Height Register 1 *)
+ RA8875_LTPR1 =           	  053H;  (*0x53//Layer Transparency Register 1*)
+ RA8875_HSBE0	=			          054H;  (*0x54//Horizontal Source Point 0 of BTE *)
+ RA8875_HSBE1	=			          055H;  (*0x55//Horizontal Source Point 1 of BTE *)
+ RA8875_VSBE0	=			          056H;  (*0x56//Vertical Source Point 0 of BTE *)
+ RA8875_VSBE1	=			          057H;  (*0x57//Vertical Source Point 1 of BTE *)
+ RA8875_HDBE0	=			          058H;  (*0x58//Horizontal Destination Point 0 of BTE *0 *)
+ RA8875_HDBE1	=			          059H;  (*0x59//Horizontal Destination Point 1 of BTE *)
+ RA8875_VDBE0	=			          05AH;  (*0x5A//Vertical Destination Point 0 of BTE *)
+ RA8875_VDBE1	=			          05BH;  (*0x5B//Vertical Destination Point 1 of BTE *)
+ RA8875_BEWR0	=			          05CH;  (*0x5C//BTE Width Register 0 *)
+ RA8875_BEWR1	=			          05DH;  (*0x5D//BTE Width Register 1 *)
+ RA8875_BEHR0	=			          05EH;  (*0x5E//BTE Height Register 0 *)
+ RA8875_BEHR1	=			          05FH;  (*0x5F//BTE Height Register 1 *)
 
 (* Pattern Set No for BTE            [0x66]
 ----- Bit 7 (Pattern Format)
@@ -454,7 +454,7 @@ from 0 to 255
 ----- Bit 3,2,1,0 (Pattern Set No)
 If pattern Format = 8x8 then Pattern Set [3:0]
 If pattern Format = 16x16 then Pattern Set [1:0] is valid *)
- RA8875_PTNO =		      660H; (* 0x66//Pattern Set No for BTE *)
+ RA8875_PTNO =		      066H; (* 0x66//Pattern Set No for BTE *)
 
 (*BTE Raster OPerations - there's 16 possible operations but these are the main ones likely to be useful *)
 
