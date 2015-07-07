@@ -831,6 +831,14 @@ PROCEDURE SendData*(data: INTEGER);
  
  PROCEDURE SetTextCursorControl(); (*  SetTextCursorControl(cursor_t cursor, bool blink)*)
  
+ (* typedef enum
+{
+    NOCURSOR,   ///< cursor is hidden
+    IBEAM,      ///< | cursor
+    UNDER,      ///< _ cursor
+    BLOCK       ///< Block cursor
+} cursor_t; *)
+ 
  (*RetCode_t RA8875::SetTextCursorControl(cursor_t cursor, bool blink)
 {
     unsigned char mwcr0 = ReadCommand(0x40) & 0x0F; // retain direction, auto-increase
