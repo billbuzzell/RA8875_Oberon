@@ -1,6 +1,6 @@
 MODULE RA8875_b;
 
-IMPORT Strings;
+IMPORT Timer, SPI, SYSTEM, MCU;
 
 CONST
 
@@ -694,27 +694,100 @@ If pattern Format = 16x16 then Pattern Set [1:0] is valid *)
 	RA8875_INTCx_TP  =       	    004H;  (*0x04 *)
 	RA8875_INTCx_BTE =       	    002H;  (*0x02 *)
   
+ A0 = {6};    (* P0.6  = mbed P8 *)
+ CS = {18};   (* P0.18 = mbed P11 *)
+ Reset = {8}; (* P0.8  = mbed P6 *)
   
-TYPE
-
-chararray = ARRAY OF CHAR;
-
-ConstValFunc = PROCEDURE (RegName: chararray):INTEGER;
   
-InitSequence = ARRAY OF ConstValFunc;
-VAR
-constvalue : INTEGER;
+PROCEDURE SendData(data: INTEGER);
+  BEGIN
+    SYSTEM.PUT(MCU.FIO0SET, A0);(* mBed P8*)
+    SYSTEM.PUT(MCU.FIO0CLR, CS);(* mBed P11*)
+    SPI.SendData(data);
+    SYSTEM.PUT(MCU.FIO0SET, CS);
+  END SendData;
+  
+   
+  PROCEDURE SendCommand(data: INTEGER);
+  BEGIN
+    SYSTEM.PUT(MCU.FIO0CLR, A0);(* mBed P8*)
+    SYSTEM.PUT(MCU.FIO0CLR, CS);(* mBed P11*)
+    SPI.SendData(data);
+    SYSTEM.PUT(MCU.FIO0SET, CS)
+  END SendCommand;
+  
+  PROCEDURE SendComData(comm, data: INTEGER);
+  BEGIN
+    SYSTEM.PUT(MCU.FIO0CLR, A0);
+    SYSTEM.PUT(MCU.FIO0SET, CS);
+    SPI.SendData(comm);
+    SPI.SendData(data);
+    SYSTEM.PUT(MCU.FIO0SET, CS)
+  END SendComData; 
+  
+  PROCEDURE* ConfigureSPI1Pins;
+  VAR
+    s: SET;
+  BEGIN 
+    (* SPI1 *)
+    (* Setup    SCK1, SSEL1, MISO1, MOSI1, no SSEL *)
+    (* PS0 bits 15:14 12:13  17:16, 19:18 := 10B *) 
+    SYSTEM.GET(MCU.PINSEL0, s);
+    s := s + {15, 17, 19} - {14, 16, 18};
+    SYSTEM.PUT(MCU.PINSEL0, s)
+  END ConfigureSPI1Pins;
 
-PROCEDURE RegValue(String: ConstValFunc):INTEGER;
-BEGIN 
-constvalue := (String); 
-RETURN constvalue
+  PROCEDURE* ConfigureGPIOPins;
+  VAR
+    s: SET;
+  BEGIN
+    (* P0.6, P0.8 are GPIO ports *)
+    SYSTEM.GET(MCU.PINSEL0, s);
+    s := s - {12, 13, 16, 17};
+    SYSTEM.PUT(MCU.PINSEL0, s);
 
-END RegValue;
+    (* P0.18 is GPIO port *)
+    SYSTEM.GET(MCU.PINSEL1, s);
+    s := s - {4, 5};
+    SYSTEM.PUT(MCU.PINSEL1, s);
 
+    (* P0.6, 0.8 and 0.18 are outputs *)
+    SYSTEM.GET(MCU.FIO0DIR, s);
+    SYSTEM.PUT(MCU.FIO0DIR, s + A0 + CS + Reset)
+  END ConfigureGPIOPins;
 
+  PROCEDURE Init*;
+  CONST
+    nBits = 8;
+  BEGIN    
+    
+    SPI.Init(SPI.SPI1, nBits, ConfigureSPI1Pins);
+    
+    ConfigureGPIOPins();
+    
+    SYSTEM.PUT(MCU.FIO0CLR, A0); 
+    SYSTEM.PUT(MCU.FIO0SET, CS); 
+    SYSTEM.PUT(MCU.FIO0CLR, Reset); 
+    Timer.uSecDelay(100);
+    SYSTEM.PUT(MCU.FIO0SET, Reset); 
+    Timer.uSecDelay(100);
+
+    SendCommand(0AEH);    
+    SendCommand(0A2H); 
+    SendCommand(00AH);    
+    SendComData(05DH, 080H); 
+    SendComData(0A8H, 03FH);    
+    SendComData(3D0H, 000H);
+    SendComData(040H, 000H); 
+    SendComData(08DH, 014H);  
+    SendCommand(140H);
+    SendComData(020H, 000H); 
+    SendCommand(000H);    
+    SendComData(0A0H, 001H);    
+    SendCommand(08CH);    
+    SendComData(0ADH, 012H);      
+    SendComData(081H, 0FCH);    
+    
+  END Init;
 
 END RA8875_b.
-
-
-
