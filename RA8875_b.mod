@@ -702,6 +702,8 @@ If pattern Format = 16x16 then Pattern Set [1:0] is valid *)
  A0 = {6};    (* P0.6  = mbed P8 *)
  CS = {18};   (* P0.18 = mbed P11 *)
  Reset = {8}; (* P0.8  = mbed P6 *)
+ 
+ Colors = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};  
   
   
 PROCEDURE SendData*(data: INTEGER);
@@ -829,7 +831,7 @@ PROCEDURE SendData*(data: INTEGER);
 *)
  END SetWindow;
  
- PROCEDURE SetTextCursorControl(); (*  SetTextCursorControl(cursor_t cursor, bool blink)*)
+ PROCEDURE SetTextCursorControl(cursor: INTEGER; blink: BOOLEAN); (*  SetTextCursorControl(cursor_t cursor, bool blink)*)
  
  (* typedef enum
 {
@@ -874,15 +876,55 @@ PROCEDURE SendData*(data: INTEGER);
     WriteCommand(0x4f, vert);       // The cursor size vert
     return noerror;
 }*)
-END SetTextCursorControl;
 
-PROCEDURE Foreground();
-END Foreground;
+ BEGIN 
+ (*SendComData(040H, r);
+ SendComData(041H, g);
+ SendComData(044H, b);
+ 
+ IF cursor = 0 THEN 
+ SendComData(040H, 080H OR 040H);
+ ELSE 
+ SendComData(041H, 020H);
+ SendComData(044H, b);*)
+ END SetTextCursorControl;
 
-PROCEDURE Background();
-END Background;
+ PROCEDURE Foreground(r, g, b: INTEGER);
+ BEGIN 
+ SendComData(063H, r);
+ SendComData(064H, g);
+ SendComData(065H, b);
+ END Foreground;
 
-PROCEDURE CLS();
-END CLS;
+ PROCEDURE Background(r, g, b: INTEGER);
+ BEGIN 
+ SendComData(060H, r);
+ SendComData(061H, g);
+ SendComData(062H, b);
+ END Background;
+
+ PROCEDURE CLS();
+ END CLS;
+ 
+ PROCEDURE pixel(x, y, color: INTEGER);
+ END pixel;
+ 
+ PROCEDURE line(x1, x2, y1, y2, color: INTEGER);
+ END line;
+ 
+ PROCEDURE rect(x1, y1, x2, y2, color: INTEGER; fillit: BOOLEAN);
+ END rect;
+ 
+ PROCEDURE roundrect(x1, y1, x2, y2, radius1, radius2: INTEGER; fillit: BOOLEAN);
+ END roundrect;
+ 
+ PROCEDURE triangle(x1, y1, x2, y2, x3, y3, color: INTEGER; fillit: BOOLEAN);
+ END triangle;
+ 
+ PROCEDURE circle(x, y, radius: INTEGER; fillit: BOOLEAN);
+ END circle;
+ 
+ PROCEDURE ellipse(x, y, radius1, radius2: INTEGER; fillit: BOOLEAN);
+ END ellipse;
  
 END RA8875_b.
