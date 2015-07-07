@@ -787,21 +787,94 @@ PROCEDURE SendData*(data: INTEGER);
     Timer.uSecDelay(100);
     
     (*// Horizontal Settings  *)
-    SendComData(RA8875_HDWR, (DISPLAY_WIDTH/8 - 1));
-    SendCommand(081H);    
-    SendComData(05DH, 080H); 
-    SendComData(0A8H, 03FH);    
-    SendComData(3D0H, 000H);
-    SendComData(040H, 000H); 
-    SendComData(08DH, 014H);  
-    SendCommand(140H);
-    SendComData(020H, 000H); 
-    SendCommand(000H);    
-    SendComData(0A0H, 001H);    
-    SendCommand(08CH);    
+    SendComData(RA8875_HDWR, 799); (*  (DISPLAY_WIDTH/8 - 1)); ERROR: bad type ?? *)
+    SendComData(015H, 002H);    
+    SendComData(016H, 003H); 
+    SendComData(017H, 001H);    
+    SendComData(018H, 003H);
+    
+    (*// Vertical Settings  *)
+    (*SendComData(019H, (* ?? *));  (*  (RA8875_DISPLAY_HEIGHT-1)&0FFH)); ??? *)
+    SendComData(01AH, (* ?? *));  (*  (RA8875_DISPLAY_HEIGHT-1)>>8 *)*) 
+    SendComData(01BH, 00FH);
+    SendComData(01CH, 000H); 
+    SendComData(01DH, 00EH);    
+    SendComData(01EH, 006H);    
+    SendComData(01FH, 001H);    
     SendComData(0ADH, 012H);      
-    SendComData(081H, 0FCH);    
+    SendComData(081H, 0FCH);  
+    
+    (*// Clear ram image
+    SetWindow(0,0, width(), height());          // Initialize to full screen
+    SetTextCursorControl();
+    foreground(Blue);
+    background(Black);
+    cls();
+    return noerror; *)  
     
   END Init;
+  
+ PROCEDURE SetWindow(x, y, width, height : INTEGER);
+ (*RetCode_t RA8875::SetWindow(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
+{
+    WriteCommand(0x30, x & 0xFF);   // HSAW0
+    WriteCommand(0x31, x >> 8);     // HSAW1
+    WriteCommand(0x32, y & 0xFF);    // VSAW0
+    WriteCommand(0x33, y >> 8);      // VSAW1
+    WriteCommand(0x34, (x+width-1) & 0xFF);  // HEAW0
+    WriteCommand(0x35, (x+width-1) >> 8);    // HEAW1
+    WriteCommand(0x36, (y+height-1) & 0xFF); // VEAW0
+    WriteCommand(0x37, (y+height-1) >> 8);   // VEAW1
+    return noerror;
+*)
+ END SetWindow;
+ 
+ PROCEDURE SetTextCursorControl(); (*  SetTextCursorControl(cursor_t cursor, bool blink)*)
+ 
+ (*RetCode_t RA8875::SetTextCursorControl(cursor_t cursor, bool blink)
+{
+    unsigned char mwcr0 = ReadCommand(0x40) & 0x0F; // retain direction, auto-increase
+    unsigned char horz = 0;
+    unsigned char vert = 0;
+    
+    mwcr0 |= 0x80;                  // text mode
+    if (cursor != NOCURSOR)
+        mwcr0 |= 0x40;              // visible
+    if (blink)
+        mwcr0 |= 0x20;              // blink
+    WriteCommand(0x40, mwcr0);      // configure the cursor
+    WriteCommand(0x41, 0x00);       // close the graphics cursor
+    WriteCommand(0x44, 0x1f);       // The cursor flashing cycle
+    switch (cursor) {
+        case IBEAM:
+            horz = 0x01;
+            vert = 0x1F;
+            break;
+        case UNDER:
+            horz = 0x07;
+            vert = 0x01;
+            break;
+        case BLOCK:
+            horz = 0x07;
+            vert = 0x1F;
+            break;
+        case NOCURSOR:
+        default:
+            break;
+    }
+    WriteCommand(0x4e, horz);       // The cursor size horz
+    WriteCommand(0x4f, vert);       // The cursor size vert
+    return noerror;
+}*)
+END SetTextCursorControl;
 
+PROCEDURE Foreground();
+END Foreground;
+
+PROCEDURE Background();
+END Background;
+
+PROCEDURE CLS();
+END CLS;
+ 
 END RA8875_b.
