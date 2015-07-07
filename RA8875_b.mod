@@ -41,7 +41,12 @@ CONST
 	{0x0B,0x01} //4 -> 800x480_ALT		-> 2
 	};
 	
-  
+*)
+ 
+
+ DISPLAY_WIDTH = 800; 
+
+(* 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //                            System & Configuration Registers
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -699,7 +704,7 @@ If pattern Format = 16x16 then Pattern Set [1:0] is valid *)
  Reset = {8}; (* P0.8  = mbed P6 *)
   
   
-PROCEDURE SendData(data: INTEGER);
+PROCEDURE SendData*(data: INTEGER);
   BEGIN
     SYSTEM.PUT(MCU.FIO0SET, A0);(* mBed P8*)
     SYSTEM.PUT(MCU.FIO0CLR, CS);(* mBed P11*)
@@ -708,7 +713,7 @@ PROCEDURE SendData(data: INTEGER);
   END SendData;
   
    
-  PROCEDURE SendCommand(data: INTEGER);
+  PROCEDURE SendCommand*(data: INTEGER);
   BEGIN
     SYSTEM.PUT(MCU.FIO0CLR, A0);(* mBed P8*)
     SYSTEM.PUT(MCU.FIO0CLR, CS);(* mBed P11*)
@@ -716,16 +721,16 @@ PROCEDURE SendData(data: INTEGER);
     SYSTEM.PUT(MCU.FIO0SET, CS)
   END SendCommand;
   
-  PROCEDURE SendComData(comm, data: INTEGER);
+  PROCEDURE SendComData*(comm, data: INTEGER);
   BEGIN
     SYSTEM.PUT(MCU.FIO0CLR, A0);
     SYSTEM.PUT(MCU.FIO0SET, CS);
-    SPI.SendData(comm);
-    SPI.SendData(data);
+    SendCommand(comm);
+    SendData(data);
     SYSTEM.PUT(MCU.FIO0SET, CS)
   END SendComData; 
   
-  PROCEDURE* ConfigureSPI1Pins;
+  PROCEDURE ConfigureSPI1Pins;
   VAR
     s: SET;
   BEGIN 
@@ -737,7 +742,7 @@ PROCEDURE SendData(data: INTEGER);
     SYSTEM.PUT(MCU.PINSEL0, s)
   END ConfigureSPI1Pins;
 
-  PROCEDURE* ConfigureGPIOPins;
+  PROCEDURE ConfigureGPIOPins;
   VAR
     s: SET;
   BEGIN
@@ -758,12 +763,13 @@ PROCEDURE SendData(data: INTEGER);
 
   PROCEDURE Init*;
   CONST
-    nBits = 8;
+    nBits = 8;      
+    
   BEGIN    
     
     SPI.Init(SPI.SPI1, nBits, ConfigureSPI1Pins);
     
-    ConfigureGPIOPins();
+    ConfigureGPIOPins();   
     
     SYSTEM.PUT(MCU.FIO0CLR, A0); 
     SYSTEM.PUT(MCU.FIO0SET, CS); 
@@ -771,10 +777,18 @@ PROCEDURE SendData(data: INTEGER);
     Timer.uSecDelay(100);
     SYSTEM.PUT(MCU.FIO0SET, Reset); 
     Timer.uSecDelay(100);
-
-    SendCommand(0AEH);    
-    SendCommand(0A2H); 
-    SendCommand(00AH);    
+    
+    (* backlight_command (0). To do *)
+    
+    (*// System Config Register (SYSR) *)
+    SendComData(RA8875_SYSR, 00CH); (*  16-bpp (65K colors) color depth, 8-bit interface *)
+    (*// Pixel Clock Setting Register (PCSR) *)
+    SendComData(RA8875_PCSR, RA8875_GCVP0); (*// PDAT on PCLK falling edge, PCLK = 4 x System Clock *)
+    Timer.uSecDelay(100);
+    
+    (*// Horizontal Settings  *)
+    SendComData(RA8875_HDWR, (DISPLAY_WIDTH/8 - 1));
+    SendCommand(081H);    
     SendComData(05DH, 080H); 
     SendComData(0A8H, 03FH);    
     SendComData(3D0H, 000H);
